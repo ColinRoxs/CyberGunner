@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
 #include "FPSCharacter.generated.h"
 
 class UInputMappingContext;
@@ -45,4 +46,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* ShootAction;
+
+	UFUNCTION()
+	void Move(const FInputActionValue& Value);
 };

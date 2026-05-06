@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "EnhancedInputSubsystems.h"
 #include "Player/FPSCharacter.h"
 
 // Sets default values
@@ -15,6 +15,18 @@ AFPSCharacter::AFPSCharacter()
 void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController())) 
+	{
+		if (PlayerMappingContext) 
+		{
+			UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+			if (Subsystem) 
+			{
+				Subsystem->AddMappingContext(PlayerMappingContext, 0);
+			}
+		}
+	}
 	
 }
 
@@ -29,6 +41,11 @@ void AFPSCharacter::Tick(float DeltaTime)
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+}
+
+void AFPSCharacter::Move(const FInputActionValue& Value) 
+{
 
 }
 
