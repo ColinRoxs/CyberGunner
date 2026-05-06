@@ -48,12 +48,40 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		if (MoveAction) 
 		{
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Move);
+			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Look);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPSCharacter::StartJump);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFPSCharacter::EndJump);
+			EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AFPSCharacter::Shoot);
 		}
 	}
 }
 
 void AFPSCharacter::Move(const FInputActionValue& Value) 
 {
+	const FVector2D MovementVector = Value.Get<FVector2D>();
+	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+	AddMovementInput(GetActorRightVector(), MovementVector.X);
+}
 
+void AFPSCharacter::Look(const FInputActionValue& Value)
+{
+	const FVector2D lookAxisVector = Value.Get<FVector2D>();
+	AddControllerYawInput(lookAxisVector.X);
+	AddControllerPitchInput(lookAxisVector.Y);
+}
+
+void AFPSCharacter::StartJump()
+{
+	bPressedJump = true;
+}
+
+void AFPSCharacter::EndJump()
+{
+	bPressedJump = false;
+}
+
+void AFPSCharacter::Shoot()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Fire Pressed"));
 }
 

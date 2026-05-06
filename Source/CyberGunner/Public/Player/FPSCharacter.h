@@ -49,4 +49,16 @@ public:
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void Look(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void StartJump();
+
+	UFUNCTION()
+	void EndJump();
+
+	UFUNCTION()
+	void Shoot();
 };
