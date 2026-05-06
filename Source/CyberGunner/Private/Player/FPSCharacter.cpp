@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Player/FPSCharacter.h"
 
@@ -42,6 +43,13 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) 
+	{
+		if (MoveAction) 
+		{
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Move);
+		}
+	}
 }
 
 void AFPSCharacter::Move(const FInputActionValue& Value) 
