@@ -67,6 +67,12 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPSCharacter::StartJump);
 			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFPSCharacter::EndJump);
 			EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AFPSCharacter::Shoot);
+			EnhancedInputComponent->BindAction(FireMode1Action, ETriggerEvent::Started, this, &AFPSCharacter::FlakMode);
+			EnhancedInputComponent->BindAction(FireMode2Action, ETriggerEvent::Started, this, &AFPSCharacter::BeamMode);
+			EnhancedInputComponent->BindAction(FireMode3Action, ETriggerEvent::Started, this, &AFPSCharacter::ShockMode);
+			EnhancedInputComponent->BindAction(FireMode4Action, ETriggerEvent::Started, this, &AFPSCharacter::IceMode);
+			EnhancedInputComponent->BindAction(FireMode5Action, ETriggerEvent::Started, this, &AFPSCharacter::DMMode);
+			
 		}
 	}
 }
@@ -110,7 +116,7 @@ void AFPSCharacter::Shoot()
 	FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
 
 	FRotator MuzzleRotation = CameraRotation;
-	MuzzleRotation.Pitch += 10.0f;
+	MuzzleRotation.Pitch += 5.0f;
 
 	UWorld* World = GetWorld();
 	if (!World) return;
@@ -124,5 +130,93 @@ void AFPSCharacter::Shoot()
 
 	FVector LaunchDirection = MuzzleRotation.Vector();
 	Projectile->FireInDirection(LaunchDirection);
+}
+
+void AFPSCharacter::FlakMode()
+{
+	SetFireMode(EFireMode::Mode1);
+}
+
+void AFPSCharacter::BeamMode()
+{
+	SetFireMode(EFireMode::Mode2);
+}
+
+void AFPSCharacter::ShockMode()
+{
+	SetFireMode(EFireMode::Mode3);
+}
+
+void AFPSCharacter::IceMode()
+{
+	SetFireMode(EFireMode::Mode4);
+}
+
+void AFPSCharacter::DMMode()
+{
+	SetFireMode(EFireMode::Mode5);
+}
+
+void AFPSCharacter::SwitchFireMode(const FInputActionValue& Value)
+{
+	if (!Value.Get<bool>())
+		return;
+
+	int32 ModeIndex = static_cast<int32>(CurrentFireMode);
+
+	ModeIndex = (ModeIndex + 1) % 5;
+
+	CurrentFireMode = static_cast<EFireMode>(ModeIndex);
+
+	switch (CurrentFireMode)
+	{
+	case EFireMode::Mode1:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Flak spread mode"))
+		break;
+
+	case EFireMode::Mode2:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Fire beam mode"))
+		break;
+
+	case EFireMode::Mode3:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Shock rounds mode"))
+		break;
+
+	case EFireMode::Mode4:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Ice Ballista mode"))
+		break;
+
+	case EFireMode::Mode5:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Dark Burst mode"))
+		break;
+	}
+}
+
+void AFPSCharacter::SetFireMode(EFireMode NewMode)
+{
+	CurrentFireMode = NewMode;
+
+	switch (CurrentFireMode)
+	{
+	case EFireMode::Mode1:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Flak spread mode"))
+			break;
+
+	case EFireMode::Mode2:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Fire beam mode"))
+			break;
+
+	case EFireMode::Mode3:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Shock rounds mode"))
+			break;
+
+	case EFireMode::Mode4:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Ice Ballista mode"))
+			break;
+
+	case EFireMode::Mode5:
+		UE_LOG(LogTemp, Warning, TEXT("Switched to Dark Burst mode"))
+			break;
+	}
 }
 

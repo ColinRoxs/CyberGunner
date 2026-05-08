@@ -13,6 +13,16 @@
 class UInputMappingContext;
 class UInputAction;
 
+UENUM(BlueprintType)
+enum class EFireMode : uint8
+{
+	Mode1 UMETA(DispayName = "FlakCannon"),
+	Mode2 UMETA(DispayName = "FireBeam"),
+	Mode3 UMETA(DispayName = "ShockRounds"),
+	Mode4 UMETA(DispayName = "IceBallista"),
+	Mode5 UMETA(DispayName = "DarkBurst"),
+};
+
 UCLASS()
 class CYBERGUNNER_API AFPSCharacter : public ACharacter
 {
@@ -50,6 +60,21 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* ShootAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* FireMode1Action;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* FireMode2Action;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* FireMode3Action;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* FireMode4Action;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* FireMode5Action;
+
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* FPSCameraComponent;
 
@@ -76,4 +101,28 @@ public:
 
 	UFUNCTION()
 	void Shoot();
+
+	UFUNCTION()
+	void FlakMode();
+
+	UFUNCTION()
+	void BeamMode();
+
+	UFUNCTION()
+	void ShockMode();
+
+	UFUNCTION()
+	void IceMode();
+
+	UFUNCTION()
+	void DMMode();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	EFireMode CurrentFireMode = EFireMode::Mode1;
+
+	UFUNCTION()
+	void SwitchFireMode(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void SetFireMode(EFireMode NewMode);
 };
