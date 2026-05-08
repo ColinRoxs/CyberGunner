@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "PlayerProjectile.h"
+#include "Weapons/WeaponFireMode.h"
 #include "FPSCharacter.generated.h"
 
 class UInputMappingContext;
@@ -87,6 +88,24 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class APlayerProjectile> ProjectileClass;
 
+	UPROPERTY(EditAnywhere, Instanced, Category="Weapon|FireModes")
+	UWeaponFireMode* Mode1;
+
+	UPROPERTY(EditAnywhere, Instanced, Category = "Weapon|FireModes")
+	UWeaponFireMode* Mode2;
+
+	UPROPERTY(EditAnywhere, Instanced, Category = "Weapon|FireModes")
+	UWeaponFireMode* Mode3;
+
+	UPROPERTY(EditAnywhere, Instanced, Category = "Weapon|FireModes")
+	UWeaponFireMode* Mode4;
+
+	UPROPERTY(EditAnywhere, Instanced, Category = "Weapon|FireModes")
+	UWeaponFireMode* Mode5;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon|FireModes")
+	UWeaponFireMode* ActiveFireMode;
+
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 
@@ -101,6 +120,12 @@ public:
 
 	UFUNCTION()
 	void Shoot();
+
+	UFUNCTION()
+	void StartFire(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void StopFire(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void FlakMode();

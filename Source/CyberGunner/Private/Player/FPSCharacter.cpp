@@ -44,12 +44,17 @@ void AFPSCharacter::BeginPlay()
 		}
 	}
 	
+    // Ensure the active fire mode pointer matches the currently selected enum at start
+	SetFireMode(CurrentFireMode);
 }
 
 // Called every frame
 void AFPSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if(ActiveFireMode)
+		ActiveFireMode->TickFire(this, DeltaTime);
 
 }
 
@@ -60,20 +65,54 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) 
 	{
-		if (MoveAction) 
-		{
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Move);
-			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Look);
-			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPSCharacter::StartJump);
-			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFPSCharacter::EndJump);
-			EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AFPSCharacter::Shoot);
-			EnhancedInputComponent->BindAction(FireMode1Action, ETriggerEvent::Started, this, &AFPSCharacter::FlakMode);
-			EnhancedInputComponent->BindAction(FireMode2Action, ETriggerEvent::Started, this, &AFPSCharacter::BeamMode);
-			EnhancedInputComponent->BindAction(FireMode3Action, ETriggerEvent::Started, this, &AFPSCharacter::ShockMode);
-			EnhancedInputComponent->BindAction(FireMode4Action, ETriggerEvent::Started, this, &AFPSCharacter::IceMode);
-			EnhancedInputComponent->BindAction(FireMode5Action, ETriggerEvent::Started, this, &AFPSCharacter::DMMode);
-			
-		}
+    // Bind each action only if its asset is assigned. Previously binding was gated on MoveAction
+	// which prevented other bindings when MoveAction was null.
+	if (MoveAction)
+	{
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Move);
+	}
+
+	if (LookAction)
+	{
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Look);
+	}
+
+	if (JumpAction)
+	{
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPSCharacter::StartJump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFPSCharacter::EndJump);
+	}
+
+	if (ShootAction)
+	{
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AFPSCharacter::StartFire);
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &AFPSCharacter::StopFire);
+	}
+
+	if (FireMode1Action)
+	{
+		EnhancedInputComponent->BindAction(FireMode1Action, ETriggerEvent::Started, this, &AFPSCharacter::FlakMode);
+	}
+
+	if (FireMode2Action)
+	{
+		EnhancedInputComponent->BindAction(FireMode2Action, ETriggerEvent::Started, this, &AFPSCharacter::BeamMode);
+	}
+
+	if (FireMode3Action)
+	{
+		EnhancedInputComponent->BindAction(FireMode3Action, ETriggerEvent::Started, this, &AFPSCharacter::ShockMode);
+	}
+
+	if (FireMode4Action)
+	{
+		EnhancedInputComponent->BindAction(FireMode4Action, ETriggerEvent::Started, this, &AFPSCharacter::IceMode);
+	}
+
+	if (FireMode5Action)
+	{
+		EnhancedInputComponent->BindAction(FireMode5Action, ETriggerEvent::Started, this, &AFPSCharacter::DMMode);
+	}
 	}
 }
 
@@ -130,6 +169,34 @@ void AFPSCharacter::Shoot()
 
 	FVector LaunchDirection = MuzzleRotation.Vector();
 	Projectile->FireInDirection(LaunchDirection);
+}
+
+void AFPSCharacter::StartFire(const FInputActionValue& Value)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Started Firing"));
+
+	if (ActiveFireMode)
+	{
+		ActiveFireMode->StartFire(this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No active fire mode to start firing."));
+	}
+}
+
+void AFPSCharacter::StopFire(const FInputActionValue & Value)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Stopped Firing"));
+
+	if (ActiveFireMode)
+	{
+		ActiveFireMode->StopFire(this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No active fire mode to stop firing."));
+	}
 }
 
 void AFPSCharacter::FlakMode()
@@ -194,29 +261,36 @@ void AFPSCharacter::SwitchFireMode(const FInputActionValue& Value)
 
 void AFPSCharacter::SetFireMode(EFireMode NewMode)
 {
+    UE_LOG(LogTemp, Log, TEXT("SetFireMode called with mode %d"), static_cast<int32>(NewMode));
+
+	// Update enum state
 	CurrentFireMode = NewMode;
 
-	switch (CurrentFireMode)
+	switch (NewMode)
 	{
-	case EFireMode::Mode1:
-		UE_LOG(LogTemp, Warning, TEXT("Switched to Flak spread mode"))
-			break;
+	case EFireMode::Mode1: ActiveFireMode = Mode1; break;
+	case EFireMode::Mode2: ActiveFireMode = Mode2; break;
+	case EFireMode::Mode3: ActiveFireMode = Mode3; break;
+	case EFireMode::Mode4: ActiveFireMode = Mode4; break;
+	case EFireMode::Mode5: ActiveFireMode = Mode5; break;
+	default: ActiveFireMode = nullptr; break;
+	}
 
-	case EFireMode::Mode2:
-		UE_LOG(LogTemp, Warning, TEXT("Switched to Fire beam mode"))
-			break;
+	// Debug info: which slots are set
+	UE_LOG(LogTemp, Log, TEXT("Mode1=%s, Mode2=%s, Mode3=%s, Mode4=%s, Mode5=%s"),
+		Mode1 ? TEXT("SET") : TEXT("null"),
+		Mode2 ? TEXT("SET") : TEXT("null"),
+		Mode3 ? TEXT("SET") : TEXT("null"),
+		Mode4 ? TEXT("SET") : TEXT("null"),
+		Mode5 ? TEXT("SET") : TEXT("null"));
 
-	case EFireMode::Mode3:
-		UE_LOG(LogTemp, Warning, TEXT("Switched to Shock rounds mode"))
-			break;
-
-	case EFireMode::Mode4:
-		UE_LOG(LogTemp, Warning, TEXT("Switched to Ice Ballista mode"))
-			break;
-
-	case EFireMode::Mode5:
-		UE_LOG(LogTemp, Warning, TEXT("Switched to Dark Burst mode"))
-			break;
+	if (ActiveFireMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Active fire mode set to %s (enum %d)"), *ActiveFireMode->GetClass()->GetName(), static_cast<int32>(NewMode));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Fire mode %d has no instance assigned!"), static_cast<int32>(NewMode));
 	}
 }
 
