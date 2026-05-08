@@ -65,54 +65,21 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) 
 	{
-    // Bind each action only if its asset is assigned. Previously binding was gated on MoveAction
-	// which prevented other bindings when MoveAction was null.
-	if (MoveAction)
-	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Move);
-	}
-
-	if (LookAction)
-	{
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Look);
-	}
-
-	if (JumpAction)
-	{
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPSCharacter::StartJump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFPSCharacter::EndJump);
-	}
-
-	if (ShootAction)
-	{
-		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AFPSCharacter::StartFire);
-		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &AFPSCharacter::StopFire);
-	}
-
-	if (FireMode1Action)
-	{
-		EnhancedInputComponent->BindAction(FireMode1Action, ETriggerEvent::Started, this, &AFPSCharacter::FlakMode);
-	}
-
-	if (FireMode2Action)
-	{
-		EnhancedInputComponent->BindAction(FireMode2Action, ETriggerEvent::Started, this, &AFPSCharacter::BeamMode);
-	}
-
-	if (FireMode3Action)
-	{
-		EnhancedInputComponent->BindAction(FireMode3Action, ETriggerEvent::Started, this, &AFPSCharacter::ShockMode);
-	}
-
-	if (FireMode4Action)
-	{
-		EnhancedInputComponent->BindAction(FireMode4Action, ETriggerEvent::Started, this, &AFPSCharacter::IceMode);
-	}
-
-	if (FireMode5Action)
-	{
-		EnhancedInputComponent->BindAction(FireMode5Action, ETriggerEvent::Started, this, &AFPSCharacter::DMMode);
-	}
+		if (MoveAction) 
+		{
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Move);
+			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Look);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPSCharacter::StartJump);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AFPSCharacter::EndJump);
+			EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &AFPSCharacter::StartFire);
+			EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &AFPSCharacter::StopFire);
+			EnhancedInputComponent->BindAction(FireMode1Action, ETriggerEvent::Started, this, &AFPSCharacter::FlakMode);
+			EnhancedInputComponent->BindAction(FireMode2Action, ETriggerEvent::Started, this, &AFPSCharacter::BeamMode);
+			EnhancedInputComponent->BindAction(FireMode3Action, ETriggerEvent::Started, this, &AFPSCharacter::ShockMode);
+			EnhancedInputComponent->BindAction(FireMode4Action, ETriggerEvent::Started, this, &AFPSCharacter::IceMode);
+			EnhancedInputComponent->BindAction(FireMode5Action, ETriggerEvent::Started, this, &AFPSCharacter::DMMode);
+			
+		}
 	}
 }
 
@@ -173,12 +140,12 @@ void AFPSCharacter::Shoot()
 
 void AFPSCharacter::StartFire(const FInputActionValue& Value)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Started Firing"));
+	UE_LOG(LogTemp, Warning, TEXT("Started Firing"));
 
 	if (ActiveFireMode)
 	{
 		ActiveFireMode->StartFire(this);
-	}
+}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("No active fire mode to start firing."));
@@ -187,7 +154,7 @@ void AFPSCharacter::StartFire(const FInputActionValue& Value)
 
 void AFPSCharacter::StopFire(const FInputActionValue & Value)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Stopped Firing"));
+	UE_LOG(LogTemp, Warning, TEXT("Stopped Firing"));
 
 	if (ActiveFireMode)
 	{
@@ -268,7 +235,7 @@ void AFPSCharacter::SetFireMode(EFireMode NewMode)
 
 	switch (NewMode)
 	{
-	case EFireMode::Mode1: ActiveFireMode = Mode1; break;
+    case EFireMode::Mode1: ActiveFireMode = Mode1; break;
 	case EFireMode::Mode2: ActiveFireMode = Mode2; break;
 	case EFireMode::Mode3: ActiveFireMode = Mode3; break;
 	case EFireMode::Mode4: ActiveFireMode = Mode4; break;

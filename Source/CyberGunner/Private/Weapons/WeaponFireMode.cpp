@@ -12,17 +12,29 @@ void UWeaponFireMode::SpawnDebugProjectile(AFPSCharacter* Character)
 {
 	if (!Character || !DebugProjectileClass) return;
 
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	Character->GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+	FVector MuzzleOffset(100.0f, 0.0f, 0.0f); // Offset from the camera to the muzzle
+	FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+
+	FRotator MuzzleRotation = CameraRotation;
+	MuzzleRotation.Pitch += 5.0f;
+
 	UWorld* World = Character->GetWorld();
 	if (!World) return;
 
-	FVector MuzzleLocation = Character->GetActorLocation() + Character->GetActorForwardVector() * 100.0f; // Spawn 100 units in front of the character
-
-	FRotator MuzzleRotation = Character->GetActorRotation();
-
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = Character;
-	SpawnParams.Instigator = Character->GetInstigator();
+	SpawnParams.Instigator = Character;
 
-	AActor* Projectile = World->SpawnActor<AActor>(DebugProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-	if (!Projectile) return;
+	AActor* SpawnedActor = World->SpawnActor<AActor>(DebugProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+	if (!SpawnedActor) return;
+
+	if (APlayerProjectile* Projectile = Cast<APlayerProjectile>(SpawnedActor))
+	{
+		FVector LaunchDirection = MuzzleRotation.Vector();
+		Projectile->FireInDirection(LaunchDirection);
+	}
 }
