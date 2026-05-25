@@ -33,5 +33,6 @@ public:
 	TSubclassOf<AActor> DebugProjectileClass;
 
 protected:
-	void SpawnDebugProjectile(AFPSCharacter* Character);
+	void GetMuzzleLocationAndRotation(AFPSCharacter* Character, FVector& OutLocation, FRotator& OutRotation) const;
+	void SpawnDebugProjectile(AFPSCharacter* Character, const FVector& Location, const FRotator& Rotation);
 };

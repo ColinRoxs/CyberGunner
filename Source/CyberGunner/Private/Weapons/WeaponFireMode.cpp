@@ -8,33 +8,43 @@ void UWeaponFireMode::StartFire_Implementation(AFPSCharacter* Character) {}
 void UWeaponFireMode::StopFire_Implementation(AFPSCharacter* Character) {}
 void UWeaponFireMode::TickFire_Implementation(AFPSCharacter* Character, float DeltaTime) {}
 
-void UWeaponFireMode::SpawnDebugProjectile(AFPSCharacter* Character)
+void UWeaponFireMode::GetMuzzleLocationAndRotation(AFPSCharacter* Character, FVector& OutLocation, FRotator& OutRotation) const
 {
-	if (!Character || !DebugProjectileClass) return;
+	OutLocation = FVector::ZeroVector;
+	OutRotation = FRotator::ZeroRotator;
+
+	if (!Character) return;
 
 	FVector CameraLocation;
 	FRotator CameraRotation;
 	Character->GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
 	FVector MuzzleOffset(100.0f, 0.0f, 0.0f); // Offset from the camera to the muzzle
-	FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
-
-	FRotator MuzzleRotation = CameraRotation;
-	MuzzleRotation.Pitch += 5.0f;
-
-	UWorld* World = Character->GetWorld();
-	if (!World) return;
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = Character;
-	SpawnParams.Instigator = Character;
-
-	AActor* SpawnedActor = World->SpawnActor<AActor>(DebugProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-	if (!SpawnedActor) return;
-
-	if (APlayerProjectile* Projectile = Cast<APlayerProjectile>(SpawnedActor))
-	{
-		FVector LaunchDirection = MuzzleRotation.Vector();
-		Projectile->FireInDirection(LaunchDirection);
-	}
+	OutLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+	OutRotation = CameraRotation;
 }
+
+void UWeaponFireMode::SpawnDebugProjectile(AFPSCharacter* Character, const FVector& Location, const FRotator& Rotation)
+{
+    if (!Character || !DebugProjectileClass) return;
+
+    UWorld* World = Character->GetWorld();
+    if (!World) return;
+
+    FActorSpawnParameters Params;
+    Params.Owner = Character;
+    Params.Instigator = Character;
+
+    // USE THE ROTATION YOU WERE GIVEN
+    AActor* SpawnedActor = World->SpawnActor<AActor>(DebugProjectileClass, Location, Rotation, Params);
+    if (!SpawnedActor) return;
+    UE_LOG(LogTemp, Warning, TEXT("Spawned at: %s"), *Location.ToString());
+
+
+    // USE THE ROTATION YOU WERE GIVEN
+    if (APlayerProjectile* Projectile = Cast<APlayerProjectile>(SpawnedActor))
+    {
+        Projectile->FireInDirection(Rotation.Vector());
+    }
+}
+

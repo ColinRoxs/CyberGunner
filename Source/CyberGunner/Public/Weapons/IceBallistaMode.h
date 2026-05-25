@@ -15,5 +15,6 @@ class CYBERGUNNER_API UIceBallistaMode : public UWeaponFireMode
 	GENERATED_BODY()
 	
 public:
+
 	virtual void StartFire_Implementation(AFPSCharacter* Character) override;
 };

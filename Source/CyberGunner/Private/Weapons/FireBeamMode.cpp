@@ -6,7 +6,11 @@
 
 void UFireBeamMode::StartFire_Implementation(AFPSCharacter* Character)
 {
+	FVector MuzzleLocation;
+	FRotator MuzzleRotation;
+	GetMuzzleLocationAndRotation(Character, MuzzleLocation, MuzzleRotation);
+
 	UE_LOG(LogTemp, Warning, TEXT("Fire Beam Fired")); //temp log
-	SpawnDebugProjectile(Character);
+	SpawnDebugProjectile(Character, MuzzleLocation, MuzzleRotation);
 
 }

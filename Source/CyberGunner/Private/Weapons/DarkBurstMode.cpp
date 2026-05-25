@@ -6,7 +6,11 @@
 
 void UDarkBurstMode::StartFire_Implementation(AFPSCharacter* Character)
 {
+	FVector MuzzleLocation;
+	FRotator MuzzleRotation;
+	GetMuzzleLocationAndRotation(Character, MuzzleLocation, MuzzleRotation);
+
 	UE_LOG(LogTemp, Warning, TEXT("Dark Burst Charging")); //temp log
-	SpawnDebugProjectile(Character);
+	SpawnDebugProjectile(Character, MuzzleLocation, MuzzleRotation);
 
 }
