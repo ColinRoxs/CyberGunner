@@ -14,3 +14,9 @@ void UIceBallistaMode::StartFire_Implementation(AFPSCharacter* Character)
 	SpawnDebugProjectile(Character, MuzzleLocation, MuzzleRotation);
 
 }
+
+void UIceBallistaMode::TickFire_Implementation(AFPSCharacter* Character, float DeltaTime)
+{}
+
+void UIceBallistaMode::StopFire_Implementation(AFPSCharacter * Character)
+{}

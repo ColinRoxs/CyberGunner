@@ -35,7 +35,7 @@ public:
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
-	float BulletSpeed = 3000.0f;
+	float BulletSpeed = 6000.0f;
 
 	UFUNCTION()
 	void FireInDirection(const FVector& ShootDirection);
