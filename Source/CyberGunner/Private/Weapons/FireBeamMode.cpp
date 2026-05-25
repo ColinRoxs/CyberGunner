@@ -14,3 +14,9 @@ void UFireBeamMode::StartFire_Implementation(AFPSCharacter* Character)
 	SpawnDebugProjectile(Character, MuzzleLocation, MuzzleRotation);
 
 }
+
+void UFireBeamMode::TickFire_Implementation(AFPSCharacter* Character, float DeltaTime)
+{}
+
+void UFireBeamMode::StopFire_Implementation(AFPSCharacter * Character)
+{}
