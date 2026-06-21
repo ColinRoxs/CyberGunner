@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "Player/FPSCharacter.h"
 #include "FPSGameMode.generated.h"
 
 /**
@@ -16,4 +18,6 @@ class CYBERGUNNER_API AFPSGameMode : public AGameModeBase
 
 	virtual void StartPlay();
 	
+	UFUNCTION()
+	void GoToGameOver();
 };

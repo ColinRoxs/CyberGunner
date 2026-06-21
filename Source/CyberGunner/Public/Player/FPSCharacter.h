@@ -24,6 +24,8 @@ enum class EFireMode : uint8
 	Mode5 UMETA(DispayName = "DarkBurst"),
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDied);
+
 UCLASS()
 class CYBERGUNNER_API AFPSCharacter : public ACharacter
 {
@@ -105,6 +107,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon|FireModes")
 	UWeaponFireMode* ActiveFireMode;
+
+	UPROPERTY(EditAnywhere)
+	FOnPlayerDied OnPlayerDied;
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);

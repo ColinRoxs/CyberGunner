@@ -285,7 +285,7 @@ void AFPSCharacter::OnHurtPlayer(float DamageAmount)
 	HUD->GameMenuContainer->UpdateHealthBar(Armor / MaxArmor);
 
 	if (Health <= 0.0f) {
-		//Die();
+		OnPlayerDied.Broadcast();
 	}
 }
 
