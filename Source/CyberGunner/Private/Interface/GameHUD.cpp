@@ -32,7 +32,7 @@ void AGameHUD::DrawHUD()
 	// Draw Settings
 	FVector2D FinalCrosshairPos = Center - CrosshairPosOffset;
 
-	float CrosshairScale = 5.0f;
+	float CrosshairScale = 2.5f;
 	FVector2D FinalCrosshairSize(CrosshairWidth * CrosshairScale, CrosshairHeight * CrosshairScale);
 
 	// Draw the crosshair
