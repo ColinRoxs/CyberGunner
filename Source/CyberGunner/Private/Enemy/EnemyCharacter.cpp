@@ -32,3 +32,11 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
+void AEnemyCharacter::OnEnemyTakeDamage(float Amount)
+{
+	Health -= Amount;
+	if (Health <= 0) {
+		Destroy();
+	}
+}
+
