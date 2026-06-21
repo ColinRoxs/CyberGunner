@@ -14,4 +14,12 @@ class CYBERGUNNER_API AEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
 	
+public:
+	AEnemyAIController();
+
+protected:
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	UBehaviorTree* StartingBehaviorTree;
 };

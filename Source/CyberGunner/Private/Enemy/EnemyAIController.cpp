@@ -3,3 +3,14 @@
 
 #include "Enemy/EnemyAIController.h"
 
+AEnemyAIController::AEnemyAIController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AEnemyAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	RunBehaviorTree(StartingBehaviorTree);
+}
