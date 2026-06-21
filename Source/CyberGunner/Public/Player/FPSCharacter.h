@@ -156,7 +156,7 @@ public:
 
 private:
 	float Health = 100.0f;
-	float Maxhealth = 100.0f;
+	float MaxHealth = 100.0f;
 	float Armor = 100.0f;
 	float MaxArmor = 100.0f;
 };

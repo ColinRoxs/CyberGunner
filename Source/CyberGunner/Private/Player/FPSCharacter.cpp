@@ -2,6 +2,9 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Interface/GameHUD.h"
 #include "Player/FPSCharacter.h"
 
 // Sets default values
@@ -276,6 +279,10 @@ void AFPSCharacter::OnHurtPlayer(float DamageAmount)
 		Health -= DamageAmount;
 		Health = FMath::Max(Health, 0.0f);
 	}
+
+	AGameHUD* HUD = UGameplayStatics::GetPlayerController(this, 0)->GetHUD<AGameHUD>();
+	HUD->GameMenuContainer->UpdateHealthBar(Health / MaxHealth);
+	HUD->GameMenuContainer->UpdateHealthBar(Armor / MaxArmor);
 
 	if (Health <= 0.0f) {
 		//Die();
