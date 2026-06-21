@@ -261,3 +261,24 @@ void AFPSCharacter::SetFireMode(EFireMode NewMode)
 	}
 }
 
+void AFPSCharacter::OnHurtPlayer(float DamageAmount)
+{
+	if (DamageAmount <= 0.0f) return;
+
+	if (Armor > 0.0f) {
+		float DamageToArmor = FMath::Min(Armor, DamageAmount);
+
+		Armor -= DamageToArmor;
+		DamageAmount -= DamageToArmor;
+	}
+
+	if (DamageAmount > 0.0f) {
+		Health -= DamageAmount;
+		Health = FMath::Max(Health, 0.0f);
+	}
+
+	if (Health <= 0.0f) {
+		//Die();
+	}
+}
+
